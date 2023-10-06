@@ -20,21 +20,21 @@
     <script type="text/babel">
         var score=0;
         var wicket=0;
-        var over=[];
+        const over=[];
+        var hit =0;
+        let inputref=React.createRef();
         
         function addscore(num){
-            if(wicket <10 && over.length<6){
-                over.push(num);
-                score +=num;
-                rootElement.render(<App />);
-            }
+            
+          hit=num
+          rootElement.render(<App />);
+            
         }
         function addwicket(){
-            if(wicket <10 && over.length <6){
-                over.push("W");
-                wicket +=1;
-                rootElement.render(<App />);
-            }
+
+          hit="W"
+          rootElement.render(<App />);
+         
         }
         function newover(){
             over=[];
@@ -58,6 +58,48 @@
             )
 
         }
+        const Result=()=>(
+          <div>
+            {over.map((res,index)=>(<>
+              {index %6===0 ? <br />:null}
+              <span key={index}>{res ===0 ?<strong>.</strong>:res}</span> &nbsp;&nbsp;&nbsp;
+              
+              </>))}
+          </div>
+        )
+        function handelSubmit(e){
+          e.preventDefault();
+
+          if(hit =="W"){
+            wicket++
+
+          }else{
+            score +=hit;
+
+          }
+          
+         
+
+          over.unshift(
+            <span>{`${hit}, ${inputref.current.value}`}</span>
+          );
+          hit=0;
+          inputref.current.value="";
+          
+
+          rootElement.render(<App />);
+
+
+        }
+
+        const Form=()=>(
+          <form onSubmit={handelSubmit}>
+            <input value={hit} />
+            <input ref={inputref} placeholder="Add comment"/>
+            <button>Submit</button>
+
+          </form>
+        )
      
       
 
@@ -66,9 +108,16 @@
         <h1>Cricket-Score</h1>
         <h2>Score:{score}/{wicket}</h2>
         <Scorecard />
-        <h2>{over + ","}</h2>
-        <button onClick={newover}>Newover</button>
+        <br />
+        <Form />
 
+        <hr />
+        <div>
+        {over.map((res,index)=>(
+          <p key={index}x>{res}</p>
+        ))}
+        </div>
+        
           
         </>
       );
